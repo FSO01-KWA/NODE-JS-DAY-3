@@ -1,0 +1,30 @@
+const fs = require('fs');
+
+// Read and Write streams
+const source = fs.createReadStream('sourceFile.txt');
+const destination = fs.createWriteStream('destinationFile.txt');
+
+let totalBytes = 0;
+
+// Pipe from source to destination
+source.pipe(destination);
+
+// Track progress by listening to the 'data' event
+source.on('data', (chunk) => {
+    totalBytes += chunk.length;
+    console.log(`Copied ${totalBytes} bytes of data.`);
+});
+
+// When copy is complete
+source.on('end', () => {
+    console.log('File copy completed.');
+});
+
+// Error handling
+source.on('error', (err) => {
+    console.error('Read Error:', err);
+});
+
+destination.on('error', (err) => {
+    console.error('Write Error:', err);
+});
